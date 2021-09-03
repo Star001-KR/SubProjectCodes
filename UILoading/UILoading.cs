@@ -20,12 +20,13 @@ public class UILoading : MonoBehaviour
     [SerializeField] private float rotationTerm;
     [SerializeField] private int errorCode;
 
-    private bool isRotationLoadingIcon = false;
-
     // Start is called before the first frame update
     void Start()
     {
-        Check_LoadingState();
+        if (!isLoading)
+            Destroy(gameObject);
+
+        StartCoroutine(RotationLoadingIcon());
     }
 
 #region Loading Reasource Routine
@@ -35,12 +36,11 @@ public class UILoading : MonoBehaviour
 
         while (true)
         {
-            Check_LoadingState();
+            if (!isLoading)
+                Destroy(gameObject);
 
             // change reason text if loading reason changed.
             ChangeLoadingReasonString(_errorCode);
-
-            // rotate loading icon.
 
             LoadingIcon.transform.Rotate(0, 0, -rotationAngle);
             
@@ -52,18 +52,6 @@ public class UILoading : MonoBehaviour
     {
         if (_errorCode != errorCode)
             LoadingReasonText.text = _errorCode.ToString();
-    }
-    
-    void Check_LoadingState()
-    {
-        if (!isLoading)
-            Destroy(gameObject);
-
-        else if (!isRotationLoadingIcon)
-        {
-            isRotationLoadingIcon = true;
-            StartCoroutine(RotationLoadingIcon());
-        }
     }
 #endregion
 }
