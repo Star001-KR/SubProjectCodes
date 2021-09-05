@@ -38,19 +38,17 @@ public class UILoading : MonoBehaviour {
     #region 이벤트 발동 시 이벤트 매니저에서 사용되어질 함수.
     public void OnLoadingEvent(EVENT_TYPE EventType, int errorCode)
     {
-        if (errReasonDic != null)
+        switch(EventType)
         {
-            switch(EventType)
-            {
-                case EVENT_TYPE.END:
-                    StopCoroutine(RotationLoadingIcon());
-                    Destroy(gameObject);
-                break;
-                    
-                default:
+            case EVENT_TYPE.END:
+                StopCoroutine(RotationLoadingIcon());
+                Destroy(gameObject);
+            break;
+
+            default:
+                if (errReasonDic != null)
                     LoadingReasonText.text = errReasonDic[errorCode];
-                break;
-            }
+            break;
         }
     }
     #endregion
