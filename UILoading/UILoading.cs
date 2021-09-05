@@ -16,7 +16,6 @@ public class UILoading : MonoBehaviour {
     // Start is called before the first frame update
     void Start() {
         EventManager.Instance.AddListener(EVENT_TYPE.LOADING_STATE, this);
-        EventManager.Instance.AddListener(EVENT_TYPE.LOADING_REASON, this);
 
         StartCoroutine(RotationLoadingIcon());
     }
@@ -36,17 +35,23 @@ public class UILoading : MonoBehaviour {
     }
     #endregion
     
-    #region 이벤트 발동 시 이벤트 매니저에서 사용되어질 함수들.
-    public void OnEndLoading()
-    {
-        StopCoroutine(RotationLoadingIcon());
-        Destroy(gameObject);
-    }
-
-    public void OnChangeLoadingReason(int errorCode)
+    #region 이벤트 발동 시 이벤트 매니저에서 사용되어질 함수.
+    public void OnLoadingEvent(EVENT_TYPE EventType, int errorCode)
     {
         if (errReasonDic != null)
-            LoadingReasonText.text = errReasonDic[errorCode];
+        {
+            switch(EventType)
+            {
+                case EVENT_TYPE.END:
+                    StopCoroutine(RotationLoadingIcon());
+                    Destroy(gameObject);
+                break;
+                    
+                default:
+                    LoadingReasonText.text = errReasonDic[errorCode];
+                break;
+            }
+        }
     }
     #endregion
 }
