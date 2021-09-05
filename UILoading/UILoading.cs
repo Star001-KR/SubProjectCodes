@@ -1,56 +1,49 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 /*
- * 2021.09.03 / code by Tae Hyung Kim.
+ * 2021.09.05 / code by Tae Hyung Kim.
  */
-
-public class UILoading : MonoBehaviour
-{
+public class UILoading : MonoBehaviour {
     public GameObject LoadingIcon;
     public Text LoadingReasonText;
-    public GameObject BG_Dim;
-
-    private bool _isLoading = true;
-    public bool isLoading { get { return _isLoading; } set { _isLoading = value; } }
 
     [SerializeField] private float rotationAngle;
     [SerializeField] private float rotationTerm;
-    [SerializeField] private int errorCode;
 
     // Start is called before the first frame update
-    void Start()
-    {
-        if (!isLoading)
-            Destroy(gameObject);
+    void Start() {
+        EventManager.Instance.AddListener(EVENT_TYPE.LOADING_STATE, this);
+        EventManager.Instance.AddListener(EVENT_TYPE.LOADING_REASON, this);
 
         StartCoroutine(RotationLoadingIcon());
     }
 
-#region Loading Reasource Routine
-    IEnumerator RotationLoadingIcon()
-    {
-        int _errorCode = errorCode;
+    #region 로딩 상태가 지속되는 동안 반복되어질 루틴.
+    IEnumerator RotationLoadingIcon() {
+        var _rotationTerm = new WaitForSeconds(rotationTerm);
 
-        while (true)
-        {
-            if (!isLoading)
-                Destroy(gameObject);
-
-            // change reason text if loading reason changed.
-            ChangeLoadingReasonString(_errorCode);
-
+        while (true) {
             LoadingIcon.transform.Rotate(0, 0, -rotationAngle);
-            
-            yield return new WaitForSeconds(rotationTerm);
+
+            yield return _rotationTerm;
         }
     }
-
-    void ChangeLoadingReasonString(int _errorCode)
+    #endregion
+    
+    #region 이벤트 발동 시 이벤트 메니저에서 사용되어질 함수들.
+    public void OnEndLoading()
     {
-        if (_errorCode != errorCode)
-            LoadingReasonText.text = _errorCode.ToString();
+        StopCoroutine(RotationLoadingIcon());
+        Destroy(gameObject);
     }
-#endregion
+
+    public void OnChangeLoadingReason(int errorCode)
+    {
+        if (errReasonDic != null)
+            LoadingReasonText.text = errReasonDic[errorCode];
+    }
+    #endregion
 }
