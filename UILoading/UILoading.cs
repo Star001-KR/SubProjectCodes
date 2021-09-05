@@ -22,6 +22,9 @@ public class UILoading : MonoBehaviour {
     }
 
     #region 로딩 상태가 지속되는 동안 반복되어질 루틴.
+    // void Update() {
+    //      LoadingIcon.transform.Rotate(0, 0, -rotationAngle);
+    // }
     IEnumerator RotationLoadingIcon() {
         var _rotationTerm = new WaitForSeconds(rotationTerm);
 
@@ -33,7 +36,7 @@ public class UILoading : MonoBehaviour {
     }
     #endregion
     
-    #region 이벤트 발동 시 이벤트 메니저에서 사용되어질 함수들.
+    #region 이벤트 발동 시 이벤트 매니저에서 사용되어질 함수들.
     public void OnEndLoading()
     {
         StopCoroutine(RotationLoadingIcon());
