@@ -7,7 +7,7 @@ using UnityEngine.UI;
 /*
  * 2021.09.06 / code by Tae Hyung Kim.
  */
-public static class EventManager : MonoBehaviour {
+public class EventManager : MonoBehaviour {
     #region 이벤트 매니저 클래스를 싱글턴으로 생성
     private static EventManager _instance = null;
     public static EventManager Instance
