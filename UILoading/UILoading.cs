@@ -1,10 +1,11 @@
+using System
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 /*
- * 2021.09.05 / code by Tae Hyung Kim.
+ * 2021.09.06 / code by Tae Hyung Kim.
  */
 public class UILoading : MonoBehaviour {
     public GameObject LoadingIcon;
@@ -15,9 +16,15 @@ public class UILoading : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        EventManager.Instance.AddListener(EVENT_TYPE.LOADING, this);
+        EventManager.OnEndLoading += DestroyLoadingUI;
+        EventManager.OnChangeLoadingReason += ChangeReasonString;
 
         StartCoroutine(RotationLoadingIcon());
+    }
+    
+    void OnDestroy() {
+        EventManager.OnEndLoading -= DestroyLoadingUI;
+        EventManager.OnChangeLoadingReason -= ChangeReasonString;
     }
 
     #region 로딩 상태가 지속되는 동안 반복되어질 루틴.
@@ -35,21 +42,17 @@ public class UILoading : MonoBehaviour {
     }
     #endregion
     
-    #region 이벤트 발동 시 이벤트 매니저에서 사용되어질 함수.
-    public void OnLoadingEvent(EVENT_TYPE_LOADING EventType, int errorCode)
+    #region 이벤트 발동 시 사용이 필요한 함수 (event Action 체인에 포함).
+    public void DestroyLoadingUI()
     {
-        switch(EventType)
-        {
-            case EVENT_TYPE_LOADING.END:
-                StopCoroutine(RotationLoadingIcon());
-                Destroy(gameObject);
-            break;
-
-            default:
-                if (errReasonDic != null)
-                    LoadingReasonText.text = errReasonDic[errorCode];
-            break;
-        }
+        StopCoroutine(RotationLoadingIcon());
+        Destroy(gameObject);
+    }
+    
+    public void ChangeReasonString(int errorCode)
+    {
+        if (errReasonDic != null)
+            LoadingReasonText.text = errReasonDic[errorCode];
     }
     #endregion
 }
