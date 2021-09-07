@@ -19,19 +19,25 @@ public class EventManager : MonoBehaviour {
     void Awake()
     {
         if (_instance == null)
+        {
             _instance = this;
             
+            DontDestroyOnLoad(gameObject);
+        }
+            
         else
-            DestroyImmediate(this);
+            DestroyImmediate(this);   
     }
     #endregion
- 
+    
+    // public event delegate void OnEndLoading();
     public event Action OnEndLoading;
     public EndLoading()
     {
         OnEndLoading?.Invoke();
     }
  
+    // public event delegate void OnChangeLoadingReason(int errCode);
     public event Action<int> OnChangeLoadingReason;
     public ChangeLoadingReason(int errorCode)
     {
