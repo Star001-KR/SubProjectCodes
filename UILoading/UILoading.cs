@@ -51,7 +51,7 @@ public class UILoading : MonoBehaviour {
     
     public void ChangeReasonString(int errorCode)
     {
-        if (errReasonDic != null)
+        if (errReasonDic is not null)
             LoadingReasonText.text = errReasonDic[errorCode];
     }
     #endregion
